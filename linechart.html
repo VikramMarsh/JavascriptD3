@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/linechart.css">
+</head>
+<body>
+     <h1 align="center">Chicago Crime Data</h1>
+     <h3>Assault Cases from 2001-2016</h3>
+<div class="container">
+    <svg id="visualisation" width="1000" height="500"></svg>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script>
+       d3.json('./json/assault.json',function(err,data){ //Reaing JSON file
+        var dataGroup = d3.nest()
+                .key(function(d) {return d.Description;})
+                .entries(data);
+            console.log(JSON.stringify(dataGroup));
+            var color = d3.scale.category10();
+            var vis = d3.select("#visualisation"),
+                
+                MARGINS = {
+                    top: 50,
+                    right: 20,
+                    bottom: 50,
+                    left: 100
+                },
+                WIDTH = 900-MARGINS.left,
+                HEIGHT = 400-MARGINS.top,
+                lSpace = WIDTH/dataGroup.length;
+                xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(data, function(d) {
+                    return d.Year;
+                }), d3.max(data, function(d) {
+                    return d.Year;
+                })]),
+                yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min(data, function(d) {
+                    return d.Theft;
+                }), d3.max(data, function(d) {
+                    return d.Theft;
+                })]),
+                xAxis = d3.svg.axis()
+                .scale(xScale)
+                .orient("bottom"),
+
+                yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient("left");
+            
+            vis.append("svg:g")             //X-axis labels
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
+                .call(xAxis)
+                    .append("text")
+                    .style("text-anchor", "middle")
+                       .attr("y", 70)
+                       .attr("x", 400)
+                       .style("font-size","20px")
+                       .text("Years");
+            vis.append("svg:g")
+                .attr("class", "y axis")       //Y-axis labels
+                .attr("transform", "translate(" + (MARGINS.left) + ",0)")
+                .call(yAxis)
+                    .append("text")
+                       .style("text-anchor", "middle")
+                       .attr("y", 40)
+                       .attr("x", 40)
+                       .style("font-size","20px")
+                       .text("Theft Count");    
+            var lineGen = d3.svg.line()
+                .x(function(d) {
+                    return xScale(d.Year);
+                })
+                .y(function(d) {
+                    return yScale(d.Theft);
+                })
+                .interpolate("basis");
+            dataGroup.forEach(function(d,i) {
+                vis.append('svg:path')
+                .attr('id', 'line_1'+d.key.replace(/" "/g, ''))
+                .attr('d', lineGen(d.values))
+                
+                .attr('stroke', function() { // Adding colours dynamiclly
+                     return d.color = color(d.key); })
+                .attr('stroke-width', 2)
+                .attr('fill', 'none');
+                vis.append("text")
+                    .attr("x", (lSpace/2)+i*lSpace)
+                    .attr("y", HEIGHT)
+                    .style("fill", function() { // dynamic colours
+                        return d.color = color(d.key); })
+                    .attr("class","legend")
+                    .on('click',function(){     //Click event for toggle graphs
+                        var active   = d.active ? false : true;
+                        var opacity = active ? 0 : 1;
+                        d3.select("#line_1" +d.key.replace(/" "/g, ''))
+                        .transition().duration(1000)
+                        .style("opacity", opacity);
+                        d.active = active;
+                    })
+                    .text(d.key);
+            }); 
+        });
+    </script>
+</div>
+</body>
+</html>
