@@ -4,42 +4,17 @@
   <meta charset="utf-8">
   <title>Chicago Crime Data</title>
   <link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
-   
-  <style>
-  h1{
-        font-family: 'Poiret One', cursive;
-        font-size: 30pt;
-        font-weight: bold;
-  }
-  h3{
-        font-family: 'Poiret One', cursive;
-        font-size: 15pt;
-        font-weight: bold;
-  }
-.axis text, .legend {
-        font-family: 'Poiret One', cursive;
-        font-size: 12pt;
-        font-weight: bold;
-      }
-
- .axis path,
-.axis line {
-  fill: none;
-  stroke: red;
-}
-  </style>
+  <link rel="stylesheet" href="css/barchart.css">
 </head>
 <body>
   <h1 align="center">Chicago Crime Data</h1>
   <h3>Crime Over and Under $500 from 2001-2016</h3>
-
   <br>
-  
   <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script>
 
-  var yAxisLabelText = "Theft Over & Under $500";
-      var xAxisLabelText = "Years";
+  var yAxisLabelText = "Theft Over & Under $500"; // Axis Labels
+      var xAxisLabelText = "Years";               // Axis Labels
   var margin={top:20, bottom:165, left:150, right:50},
     width=900-margin.left-margin.right,
     height=500-margin.top-margin.bottom;
@@ -58,7 +33,7 @@
   .append("g")
   .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");  
-  d3.json("./json/theft.json",function(err,data){
+  d3.json("./json/theft.json",function(err,data){  // Reading JSON file
   data.forEach(function(d){
     d["Year"]=d["Year"];
     d["OVER $500"]=d["OVER $500"]; 
@@ -109,8 +84,6 @@
         tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
         tooltip.select("text").text(d.y);
   });
-
-
   svg.append("g")
       .attr("class", "axis")
       .attr("transform", "translate(0," + (height)+ ")")
@@ -151,24 +124,23 @@
          .style("font-size","15px")
          .style("font-weight","bold")
          .text(function(d,i) { return xData[i]; });
+      
+      var tooltip = svg.append("g")   // Adding tooltip
+        .attr("class", "tooltip")
+        .style("display", "none");  
 
-         // Prep the tooltip bits, initial display is hidden
-var tooltip = svg.append("g")
-  .attr("class", "tooltip")
-  .style("display", "none");
-    
-tooltip.append("rect")
-  .attr("width", 30)
-  .attr("height", 20)
-  .attr("fill", "white")
-  .style("opacity", 0.5);
+      tooltip.append("rect")
+        .attr("width", 30)
+        .attr("height", 20)
+        .attr("fill", "white")
+        .style("opacity", 0.5);
 
-tooltip.append("text")
-  .attr("x", 15)
-  .attr("dy", "1.2em")
-  .style("text-anchor", "middle")
-  .attr("font-size", "12px")
-  .attr("font-weight", "bold");
+      tooltip.append("text")
+        .attr("x", 15)
+        .attr("dy", "1.2em")
+        .style("text-anchor", "middle")
+        .attr("font-size", "12px")
+        .attr("font-weight", "bold");
   });
 </script>
 <br>

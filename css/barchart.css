@@ -1,0 +1,21 @@
+h1{
+        font-family: 'Poiret One', cursive;
+        font-size: 30pt;
+        font-weight: bold;
+  }
+  h3{
+        font-family: 'Poiret One', cursive;
+        font-size: 15pt;
+        font-weight: bold;
+  }
+.axis text, .legend {
+        font-family: 'Poiret One', cursive;
+        font-size: 12pt;
+        font-weight: bold;
+      }
+
+ .axis path,
+.axis line {
+  fill: none;
+  stroke: red;
+}

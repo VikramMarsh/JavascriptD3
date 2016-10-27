@@ -1,40 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/linechart.css">
 </head>
-<style>
-h1{
-    font-family: 'Poiret One', cursive;
-    font-size: 30pt;
-    font-weight: bold;
-  }
- h3{
-    font-family: 'Poiret One', cursive;
-    font-size: 15pt;
-    font-weight: bold;
-  }
-.axis path {
-            fill: none;
-            stroke: #777;
-            shape-rendering: crispEdges;
-            }
-/*.axis text {
-            font-family: Lato;
-            font-size: 13px;
-            }*/
-.legend {
-        font-family: 'Poiret One', cursive;
-        font-size: 20px;
-        font-weight: bold;
-        }
-.axis text{
-            font-family: 'Poiret One', cursive;
-            font-weight: bold;
-           }
-</style>
 <body>
      <h1 align="center">Chicago Crime Data</h1>
      <h3>Assault Cases from 2001-2016</h3>
@@ -42,7 +12,7 @@ h1{
     <svg id="visualisation" width="1000" height="500"></svg>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script>
-       d3.json('./json/assault.json',function(err,data){
+       d3.json('./json/assault.json',function(err,data){ //Reaing JSON file
         var dataGroup = d3.nest()
                 .key(function(d) {return d.Description;})
                 .entries(data);
@@ -77,7 +47,7 @@ h1{
                 .scale(yScale)
                 .orient("left");
             
-            vis.append("svg:g")
+            vis.append("svg:g")             //X-axis labels
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
                 .call(xAxis)
@@ -87,12 +57,8 @@ h1{
                        .attr("x", 400)
                        .style("font-size","20px")
                        .text("Years");
-
- 
-
-
             vis.append("svg:g")
-                .attr("class", "y axis")
+                .attr("class", "y axis")       //Y-axis labels
                 .attr("transform", "translate(" + (MARGINS.left) + ",0)")
                 .call(yAxis)
                     .append("text")
@@ -100,9 +66,7 @@ h1{
                        .attr("y", 40)
                        .attr("x", 40)
                        .style("font-size","20px")
-                       .text("Theft Count");
-
-                
+                       .text("Theft Count");    
             var lineGen = d3.svg.line()
                 .x(function(d) {
                     return xScale(d.Year);
@@ -113,20 +77,12 @@ h1{
                 .interpolate("basis");
             dataGroup.forEach(function(d,i) {
                 vis.append('svg:path')
+                .attr('id', 'line_1'+d.key.replace(/" "/g, ''))
                 .attr('d', lineGen(d.values))
-                .attr('stroke', function() { // Add the colours dynamically
+                
+                .attr('stroke', function() { // Adding colours dynamiclly
                      return d.color = color(d.key); })
                 .attr('stroke-width', 2)
-                
-                .on("mouseover", function (d) {                                  
-                    d3.select(this)                          //on mouseover of each line, give it a nice thick stroke
-                .style("stroke-width",'6px');
-            })
-                .on("mouseout", function(d) {        //undo everything on the mouseout
-                    d3.select(this)
-                .style("stroke-width",2);
-            })
-                .attr('id', 'line_1'+d.key)
                 .attr('fill', 'none');
                 vis.append("text")
                     .attr("x", (lSpace/2)+i*lSpace)
@@ -134,10 +90,12 @@ h1{
                     .style("fill", function() { // dynamic colours
                         return d.color = color(d.key); })
                     .attr("class","legend")
-                    .on('click',function(){
+                    .on('click',function(){     //Click event for toggle graphs
                         var active   = d.active ? false : true;
                         var opacity = active ? 0 : 1;
-                        d3.select("#line_1" + d.key).style("opacity", opacity);
+                        d3.select("#line_1" +d.key.replace(/" "/g, ''))
+                        .transition().duration(1000)
+                        .style("opacity", opacity);
                         d.active = active;
                     })
                     .text(d.key);

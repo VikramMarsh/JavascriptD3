@@ -3,31 +3,22 @@
 <head>
 	<title>Chicago Crime Data</title>
 	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<!-- Calling legends.js file for legends in graphs -->
 	<script src="../js/legend.js"></script>
 	<link href='http://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="css/piechart.css">
 </head>
 <body>
 	<h1 align="center">Chicago Crime Data</h1>
 	<h3>Crime Report for Offenses in 2015</h3>
-<style>			
-h1{
-    font-family: 'Poiret One', cursive;
-    font-size: 30pt;
-    font-weight: bold;
-  }
- h3{
-        font-family: 'Poiret One', cursive;
-        font-size: 15pt;
-        font-weight: bold;
-  }
-  </style>
+
 <script type="text/javascript">
 var count=0;
 var count1=0;
 var count2=0;
 var count3=0;
 var xmlhttp= new XMLHttpRequest();
- var url="../json/piechart.json";
+ var url="../json/piechart.json";	// Reading Json file
  xmlhttp.onreadystatechange=function()
 {
  	if(this.readyState==4 && this.status==200)
@@ -46,8 +37,7 @@ var xmlhttp= new XMLHttpRequest();
 	var count2=0;
 	var count3=0;
 	
-
-	for(i=0;i<arr.length;i++)
+	for(i=0;i<arr.length;i++)	//Calculating the count for different offenses
 	{
 			if(arr[i].FBI=="2" || arr[i].FBI=="3" || arr[i].FBI=="4A" || arr[i].FBI=="4B" || arr[i].FBI=="5" || arr[i].FBI=="6" || arr[i].FBI=="7" || arr[i].FBI=="9" )
 		{
